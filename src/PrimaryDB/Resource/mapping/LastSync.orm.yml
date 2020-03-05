@@ -1,0 +1,14 @@
+DBSynchronizer\PrimaryDB\Entity\LastSync:
+  repositoryClass: DBSynchronizer\PrimaryDB\Repository\LastSyncRepository
+  type: entity
+  table: LastSync
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    dateTime:
+      type: datetime
+    status:
+      type: integer

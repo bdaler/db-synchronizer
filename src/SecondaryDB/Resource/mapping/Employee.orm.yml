@@ -1,0 +1,16 @@
+DBSynchronizer\SecondaryDB\Entity\Employee:
+  repositoryClass: DBSynchronizer\SecondaryDB\Repository\EmployeeRepository
+  type: entity
+  table: employee
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    createdAt:
+      type: datetime
+    modifiedAt:
+      type: datetime
+    name:
+      length: 140

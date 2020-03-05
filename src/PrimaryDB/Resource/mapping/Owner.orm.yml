@@ -1,0 +1,16 @@
+DBSynchronizer\PrimaryDB\Entity\Owner:
+  repositoryClass: DBSynchronizer\PrimaryDB\Repository\OwnerRepository
+  type: entity
+  table: owner
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    createdAt:
+      type: datetime
+    modifiedAt:
+      type: datetime
+    name:
+      length: 140

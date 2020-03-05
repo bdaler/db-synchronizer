@@ -1,0 +1,16 @@
+DBSynchronizer\SecondaryDB\Entity\Sku:
+  repositoryClass: DBSynchronizer\SecondaryDB\Repository\SkuRepository
+  type: entity
+  table: sku
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    createdAt:
+      type: datetime
+    modifiedAt:
+      type: datetime
+    name:
+      length: 140

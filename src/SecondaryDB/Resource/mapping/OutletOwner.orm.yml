@@ -1,0 +1,19 @@
+DBSynchronizer\SecondaryDB\Entity\OutletOwner:
+  repositoryClass: DBSynchronizer\SecondaryDB\Repository\OutletOwnerRepository
+  type: entity
+  table: outletOwner
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    createdAt:
+      type: datetime
+    modifiedAt:
+      type: datetime
+    name:
+      length: 140
+    ownerName:
+      length: 140
+      column: owner_name

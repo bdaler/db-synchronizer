@@ -1,0 +1,20 @@
+DBSynchronizer\PrimaryDB\Entity\Outlet:
+  repositoryClass: DBSynchronizer\PrimaryDB\Repository\OutletRepository
+  type: entity
+  table: outlet
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    createdAt:
+      type: datetime
+    modifiedAt:
+      type: datetime
+    name:
+      length: 140
+  manyToOne:
+    owner:
+      targetEntity: Owner
+      cascade: ["persist"]

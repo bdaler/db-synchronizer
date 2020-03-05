@@ -1,0 +1,41 @@
+{
+  "name": "bdaler/db-synchronizer",
+  "description": "DB synchronizer",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "Daler B",
+      "email": "dalerkbtut@gmail.com"
+    }
+  ],
+  "require": {
+    "PHP": ">=7.2",
+    "symfony/console": "^3.3",
+    "myclabs/php-enum": "^1.5",
+    "doctrine/orm": "^2.5",
+    "symfony/yaml": "^3.3",
+    "symfony/dependency-injection": "^3.3",
+    "nesbot/carbon": "^1.22",
+    "monolog/monolog": "^1.23",
+    "symfony/config": "^3.3",
+    "symfony/expression-language": "^3.3",
+    "symfony/event-dispatcher": "^2.8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.4",
+    "doctrine/data-fixtures": "^1.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "DBSynchronizer\\": "src/",
+      "DBSynchronizer\\App\\": "app/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DBSynchronizer\\Tests\\": "tests/"
+    }
+  }
+}

@@ -1,0 +1,108 @@
+parameters:
+  primary_db_path: '/var/www/.db/db1.db'
+  secondry_db_path: '/var/www/.db/db2.db'
+  test_primary_db_path: '/var/www/.db/db1.test.db'
+  test_secondry_db_path: '/var/www/.db/db2.test.db'
+  const:
+    syslog_user_level: !php/const:LOG_USER
+    monolog:
+      debug_level: !php/const:Monolog\Logger::DEBUG
+      info_level: !php/const:Monolog\Logger::INFO
+      critical_level: !php/const:Monolog\Logger::CRITICAL
+  general:
+    debug: true
+    log:
+      file: '/var/www/var/log/db-synchronizer.log'
+      ident: 'db-synchronizer'
+    db_config:
+      driver: 'pdo_sqlite'
+services:
+  file_rotate_stream:
+    class: Monolog\Handler\RotatingFileHandler
+    arguments:
+      - %general.log.file%
+      - 0
+      - "@=container.hasParameter('general.debug') && parameter('general.debug') ? parameter('const.monolog.debug_level') : parameter('const.monolog.info_level')"
+      - true
+      - 0660
+    calls:
+      - [ setFilenameFormat, [ '{filename}.{date}', 'Y-m-d' ]]
+  syslog_stream:
+    class: Monolog\Handler\SyslogHandler
+    arguments:
+      - %general.log.ident%
+      - %const.syslog_user_level%
+      - %const.monolog.critical_level%
+  logger:
+    class: Monolog\Logger
+    arguments:
+      - %general.log.ident%
+    calls:
+      - [ pushHandler, [ '@file_rotate_stream' ]]
+      - [ pushHandler, [ '@syslog_stream' ]]
+  entity_manager_factory:
+    class: DBSynchronizer\Factory\EntityManagerFactory
+  entity_manager_primary_db:
+    class: Doctrine\ORM\EntityManager
+    factory: entity_manager_factory:build
+    arguments:
+      - %general.db_config.driver%
+      - %primary_db_path%
+      - 1
+      - "@=container.hasParameter('general.debug') ? parameter('general.debug') : false"
+  entity_manager_secondary_db:
+    class: Doctrine\ORM\EntityManager
+    factory: entity_manager_factory:build
+    arguments:
+      - %general.db_config.driver%
+      - %secondry_db_path%
+      - 2
+      - "@=container.hasParameter('general.debug') ? parameter('general.debug') : false"
+  entity_manager_test_primary_db:
+    class: Doctrine\ORM\EntityManager
+    factory: entity_manager_factory:build
+    arguments:
+      - %general.db_config.driver%
+      - %test_primary_db_path%
+      - 1
+      - "@=container.hasParameter('general.debug') ? parameter('general.debug') : false"
+  entity_manager_test_secondary_db:
+    class: Doctrine\ORM\EntityManager
+    factory: entity_manager_factory:build
+    arguments:
+      - %general.db_config.driver%
+      - %test_secondry_db_path%
+      - 2
+      - "@=container.hasParameter('general.debug') ? parameter('general.debug') : false"
+  updater:
+    class: DBSynchronizer\Service\Updater
+    arguments:
+      - '@service_container'
+      - "@logger"
+  base_updater:
+    class: DBSynchronizer\Service\BaseUpdater
+    arguments:
+      - "@logger"
+  employee_updater:
+    class: DBSynchronizer\Service\UpdateEmployee
+    arguments:
+      - "@logger"
+  outlet_updater:
+    class: DBSynchronizer\Service\UpdateOutlet
+    arguments:
+      - "@logger"
+  sku_updater:
+    class: DBSynchronizer\Service\UpdateSku
+    arguments:
+      - "@logger"
+  remove_existence:
+    class: DBSynchronizer\Service\RemoveExistence
+    arguments:
+      - "@logger"
+  listner:
+    class: DBSynchronizer\Service\EntityListener
+    arguments:
+      - "@entity_manager_primary_db"
+      - "@entity_manager_secondary_db"
+    tags:
+      - {name: doctrine.event_listener, event: postUpdate, lazy: true}
